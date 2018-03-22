@@ -340,6 +340,7 @@ def create_collection():
     form.gif_picks.choices = choices
     # TODO 364: If the form validates on submit, get the list of the gif ids that were selected from the form. Use the get_gif_by_id function to create a list of Gif objects.  Then, use the information available to you at this point in the function (e.g. the list of gif objects, the current_user) to invoke the get_or_create_collection function, and redirect to the page that shows a list of all your collections.
     if form.validate_on_submit():
+        print('form validated')
         gifs = [get_gif_by_id(gif_id) for gif_id in form.gif_picks.data]
         collection = get_or_create_collection(name=form.name.data, current_user=current_user, gif_list=gifs)
         return redirect(url_for('collections'))
