@@ -237,11 +237,11 @@ def get_or_create_collection(name, current_user, gif_list=[]):
     # In other words, based on the input to this function, if there exists a collection with the input name, associated with the current user, then this function should return that PersonalGifCollection instance.
     if collection: return collection
     # However, if no such collection exists, a new PersonalGifCollection instance should be created, and each Gif in the gif_list input should be appended to it (remember, there exists a many to many relationship between Gifs and PersonalGifCollections)
-    collection = PersonalGifCollection(name=name, user_id=current_user)
+    collection = PersonalGifCollection(name=name, user_id=current_user.id)
     for gif in gif_list:
         collection.gifs.append(gif)
     db.session.add(collection)
-    db.commit()
+    db.session.commit()
     return collection
     # HINT: You can think of a PersonalGifCollection like a Playlist, and Gifs like Songs.
 
@@ -339,7 +339,7 @@ def create_collection():
     choices = [(g.id, g.title) for g in gifs]
     form.gif_picks.choices = choices
     # TODO 364: If the form validates on submit, get the list of the gif ids that were selected from the form. Use the get_gif_by_id function to create a list of Gif objects.  Then, use the information available to you at this point in the function (e.g. the list of gif objects, the current_user) to invoke the get_or_create_collection function, and redirect to the page that shows a list of all your collections.
-    if form.validate_on_submit():
+    if request.method == 'POST':
         print('form validated')
         gifs = [get_gif_by_id(gif_id) for gif_id in form.gif_picks.data]
         collection = get_or_create_collection(name=form.name.data, current_user=current_user, gif_list=gifs)
